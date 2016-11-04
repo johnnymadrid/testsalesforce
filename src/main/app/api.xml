@@ -15,38 +15,10 @@ http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee
         <apikit:console config-ref="api-config" doc:name="APIkit Console"/>
     </flow>
     <flow name="post:/update:api-config">
-        <dw:transform-message doc:name="Update Lead">
-            <dw:set-payload><![CDATA[%dw 1.0
-%output application/java
----
-[{
-	LastName: payload.lastName,
-	Company: payload.company,
-	Rating: payload.rating
-}]]]></dw:set-payload>
-        </dw:transform-message>
-        <sfdc:update config-ref="Salesforce_Basic_Connection" type="Lead" doc:name="Update Lead">
-            <sfdc:objects ref="#[payload]"/>
-        </sfdc:update>
-        <set-payload value="{&#xA;  &quot;message&quot;: &quot;Lead updated!&quot;&#xA;}" doc:name="Set Payload"/>
+        <flow-ref name="update-flow" doc:name="update-flow"/>
     </flow>
     <flow name="post:/register:api-config">
-        <dw:transform-message doc:name="Register Lead">
-            <dw:set-payload><![CDATA[%dw 1.0
-%output application/java
----
-[{
-	LastName: payload.lastName,
-	FirstName: payload.firstName,
-	Salutation: payload.title,
-	Company: payload.company,
-	Status: payload.leadStatus
-}]]]></dw:set-payload>
-        </dw:transform-message>
-        <sfdc:create config-ref="Salesforce_Basic_Connection" type="Lead" doc:name="Create Lead">
-            <sfdc:objects ref="#[payload]"/>
-        </sfdc:create>
-        <set-payload value="{&#xA;  &quot;message&quot;: &quot;Registration successful&quot;&#xA;}" doc:name="Set Payload"/>
+        <flow-ref name="register-flow" doc:name="register-flow"/>
     </flow>
     
 </mule>

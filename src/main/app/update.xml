@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:spring="http://www.springframework.org/schema/beans" xmlns:sfdc="http://www.mulesoft.org/schema/mule/sfdc" xmlns:dw="http://www.mulesoft.org/schema/mule/ee/dw" xmlns:core="http://www.mulesoft.org/schema/mule/core" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/sfdc http://www.mulesoft.org/schema/mule/sfdc/current/mule-sfdc.xsd
+http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee/dw/current/dw.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+    <sub-flow name="update-flow">
+        <dw:transform-message doc:name="Update Lead">
+            <dw:set-payload><![CDATA[%dw 1.0
+%output application/java
+---
+[{
+	LastName: payload.lastName,
+	Company: payload.company,
+	Rating: payload.rating
+}]]]></dw:set-payload>
+        </dw:transform-message>
+        <sfdc:update config-ref="Salesforce_Basic_Connection" type="Lead" doc:name="Update Lead">
+            <sfdc:objects ref="#[payload]"/>
+        </sfdc:update>
+        <set-payload value="{
+  &quot;message&quot;: &quot;Lead updated!&quot;
+}" doc:name="Set Payload"/>
+    </sub-flow>
+</mule>

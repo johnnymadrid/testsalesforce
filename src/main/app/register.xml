@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:spring="http://www.springframework.org/schema/beans" xmlns:sfdc="http://www.mulesoft.org/schema/mule/sfdc" xmlns:dw="http://www.mulesoft.org/schema/mule/ee/dw" xmlns:core="http://www.mulesoft.org/schema/mule/core" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/sfdc http://www.mulesoft.org/schema/mule/sfdc/current/mule-sfdc.xsd
+http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee/dw/current/dw.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+    <sub-flow name="register-flow">
+        <dw:transform-message doc:name="Register Lead">
+            <dw:set-payload><![CDATA[%dw 1.0
+%output application/java
+---
+[{
+	LastName: payload.lastName,
+	FirstName: payload.firstName,
+	Salutation: payload.title,
+	Company: payload.company,
+	Status: payload.leadStatus
+}]]]></dw:set-payload>
+        </dw:transform-message>
+        <sfdc:create config-ref="Salesforce_Basic_Connection" type="Lead" doc:name="Create Lead">
+            <sfdc:objects ref="#[payload]"/>
+        </sfdc:create>
+        <set-payload value="{
+  &quot;message&quot;: &quot;Registration successful&quot;
+}" doc:name="Set Payload"/>
+    </sub-flow>
+</mule>
