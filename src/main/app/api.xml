@@ -5,19 +5,29 @@ http://www.mulesoft.org/schema/mule/apikit http://www.mulesoft.org/schema/mule/a
 http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
 http://www.mulesoft.org/schema/mule/sfdc http://www.mulesoft.org/schema/mule/sfdc/current/mule-sfdc.xsd
 http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee/dw/current/dw.xsd">
-    <http:listener-config name="api-httpListenerConfig" host="localhost" port="8081" doc:name="HTTP Listener Configuration"/>
-    <apikit:config name="api-config" raml="api.raml" consoleEnabled="false" doc:name="Router"/>
-    <sfdc:config name="Salesforce__Basic_Authentication" username="madrid.johnny@gmail.com" password="edX-yBD-8nm-wEP" securityToken="Kx61Vqp1L7w00riZoLYoZtxj" doc:name="Salesforce: Basic Authentication"/>
     <flow name="api-main">
-        <http:listener config-ref="api-httpListenerConfig" path="/api/*" allowedMethods="POST" doc:name="HTTP"/>
+        <http:listener config-ref="HTTPListener" path="/api/*" allowedMethods="POST" doc:name="HTTP"/>
         <apikit:router config-ref="api-config" doc:name="APIkit Router"/>
         <exception-strategy ref="api-apiKitGlobalExceptionMapping" doc:name="Reference Exception Strategy"/>
     </flow>
     <flow name="api-console">
-        <http:listener config-ref="api-httpListenerConfig" path="/console/*" doc:name="HTTP"/>
+        <http:listener config-ref="HTTPListener" path="/console/*" doc:name="HTTP"/>
         <apikit:console config-ref="api-config" doc:name="APIkit Console"/>
     </flow>
     <flow name="post:/update:api-config">
+        <dw:transform-message doc:name="Transform Message">
+            <dw:set-payload><![CDATA[%dw 1.0
+%output application/java
+---
+[{
+	LastName: payload.lastName,
+	Company: payload.company,
+	Rating: payload.rating
+}]]]></dw:set-payload>
+        </dw:transform-message>
+        <sfdc:update config-ref="Salesforce_Basic_Connection" type="Lead" doc:name="Update Lead">
+            <sfdc:objects ref="#[payload]"/>
+        </sfdc:update>
         <set-payload value="{&#xA;  &quot;message&quot;: &quot;Lead updated!&quot;&#xA;}" doc:name="Set Payload"/>
     </flow>
     <flow name="post:/register:api-config">
@@ -33,7 +43,7 @@ http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee
 	Status: payload.leadStatus
 }]]]></dw:set-payload>
         </dw:transform-message>
-        <sfdc:create config-ref="Salesforce__Basic_Authentication" type="Lead" doc:name="Salesforce">
+        <sfdc:create config-ref="Salesforce_Basic_Connection" type="Lead" doc:name="Create Lead">
             <sfdc:objects ref="#[payload]"/>
         </sfdc:create>
         <set-payload value="{&#xA;  &quot;message&quot;: &quot;Registration successful&quot;&#xA;}" doc:name="Set Payload"/>
