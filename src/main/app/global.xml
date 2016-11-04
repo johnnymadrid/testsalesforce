@@ -13,7 +13,7 @@ http://www.mulesoft.org/schema/mule/apikit http://www.mulesoft.org/schema/mule/a
 http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-current.xsd
 http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
 
-<http:listener-config name="HTTPListener" host="${host}" port="${port}" doc:name="HTTP Listener Configuration"/>
+<http:listener-config name="HTTPSalesforceListener" host="${host}" port="${port}" doc:name="HTTP Listener Configuration"/>
     <apikit:config name="api-config" raml="api.raml" consoleEnabled="false" doc:name="Router"/>
     <sfdc:config name="Salesforce_Basic_Connection" username="madrid.johnny@gmail.com" password="edX-yBD-8nm-wEP" securityToken="Kx61Vqp1L7w00riZoLYoZtxj" doc:name="Salesforce: Basic Authentication"/>
     <context:property-placeholder location="${mule.env}.properties"/>
