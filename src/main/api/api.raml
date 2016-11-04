@@ -1,0 +1,60 @@
+#%RAML 0.8
+title: EnrollAPI
+version: 1.0
+#baseUri: http://localhost/api/{version}
+baseUri: https://mocksvc.mulesoft.com/mocks/4699b60d-be8c-4ba7-8e2a-d1c606d785ec/api/{version}
+
+/register:
+  post:
+    description: It is only available this http method for request in the API.
+    body:
+      application/json:
+        example: | 
+          {
+            "title": "Mr.",
+            "firstName": "Name",
+            "lastName": "LastName",
+            "company": "BigCompany",
+            "leadStatus": "Open - Not Contacted"
+          }
+    responses:
+      200:
+        body:
+          application/json:
+            example: |
+              {
+                "message": "Registration successful"
+              }
+      400:
+        body:
+          application/json:
+            example: |
+              {
+                "message": "This is so bad"
+              }
+/update:
+  post:
+    description: Try to update the information which has been recorded as a lead in Salesforce
+    body:
+      application/json:
+        example: | 
+          {
+            "lastName": "Newie",
+            "company": "Popular Bank",
+            "rating": "Hot"
+          }
+    responses:
+      200:
+        body:
+          application/json:
+            example: |
+              {
+                "message": "Lead updated!"
+              }
+      400:
+        body:
+          application/json:
+            example: |
+              {
+                "message": "we will try to figure out what has been done."
+              }
