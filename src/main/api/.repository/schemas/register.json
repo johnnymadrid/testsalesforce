@@ -1,0 +1,63 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "description" : "Salutation for the new lead.",
+      "enum": ["Mr.", "Mrs.", "Miss.", "Ms.", "Dr.", "Prof."]
+    },
+    "firstName": {
+      "type": "string",
+      "description": "It is the first name which identify the individual",
+      "minLength": 1,
+      "maxLength": 40
+    },
+    "lastName": {
+      "type": "string",
+      "description": "It is the family name to identify the individual.",
+      "minLength": 1,
+      "maxLength": 40
+    },
+    "phone": {
+      "type": "string",
+      "description": "A phone number which can be used to contact the user.",
+      "pattern": "^(\\([0-9]{3}\\))?[0-9]{3}-[0-9]{4}$",
+      "minLength": 9,
+      "maxLength": 40
+    },
+    "mobile": {
+      "type": "string",
+      "description": "In despite of the fact this field must be required to contact the new user, the email is preferred to reach him out.",
+      "minLength": 9,
+      "maxLength": 40
+    },
+    "company": {
+      "type": "string",
+      "description": "It is the organization where the user usually works.",
+      "maxLength": 255
+    },
+    "email": {
+      "type": "string",
+      "description": "Email address which the user can be reach out the user.",
+      "format": "email"
+    },
+    "leadStatus": {
+      "type": "string",
+      "description": "A status lead predefined by Salesforce.",
+      "enum": ["Open - Not Contacted", "Working - Contacted", "Closed - Converted", "Closed - Not Converted"]
+    },
+    "leadSource": {
+      "type": "string",
+      "description": "The source of lead which is used to relate with the user.",
+      "enum": ["", "Web", "Phone Inquiry", "Partner Referral", "Purchased List", "Other"]
+    }
+  },
+  "required": [
+    "title",
+    "firstName",
+    "lastName",
+    "company",
+    "leadStatus"
+  ]
+}

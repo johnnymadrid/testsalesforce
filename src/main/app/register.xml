@@ -14,6 +14,10 @@ http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/cor
 	FirstName: payload.firstName,
 	Salutation: payload.title,
 	Company: payload.company,
+	Phone: payload.phone,
+	MobilePhone: payload.mobile,
+	Email: payload.email,
+	LeadSource: payload.leadSource,
 	Status: payload.leadStatus
 }]]]></dw:set-payload>
         </dw:transform-message>

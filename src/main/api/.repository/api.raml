@@ -1,37 +1,31 @@
 #%RAML 0.8
+#===================================================================
+# RAML Definition of two endpoints to connect with Salesforce.
+# - Defined examples and schemas.
+# - Email: madrid.johnny@gmail.com
+#===================================================================
 title: EnrollAPI
-version: 1.0
+version: 1.1
 #baseUri: http://localhost/api/{version}
-baseUri: https://mocksvc.mulesoft.com/mocks/4699b60d-be8c-4ba7-8e2a-d1c606d785ec/api/{version}
-
+baseUri: https://mocksvc.mulesoft.com/mocks/4f16b454-fe24-490b-a441-ba52829e794a/mocks/4699b60d-be8c-4ba7-8e2a-d1c606d785ec/api/{version}
+# The endpoint 'register' let to insert a new lead in Salesforce.
 /register:
   post:
-    description: It is only available this http method for request in the API.
+    description: The register endpoint allow to communicate with Salesforce to insert a new lead. This endpoint is only available in POST method.
     body:
       application/json:
-        example: | 
-          {
-            "title": "Mr.",
-            "firstName": "Name",
-            "lastName": "LastName",
-            "company": "BigCompany",
-            "leadStatus": "Open - Not Contacted"
-          }
+        example: !include ./examples/register.json
+        schema: !include ./schemas/register.json
     responses:
       200:
         body:
           application/json:
-            example: |
-              {
-                "message": "Registration successful"
-              }
+            example: !include ./responses/200.json
       400:
         body:
           application/json:
-            example: |
-              {
-                "message": "This is so bad"
-              }
+            example: !include ./responses/400.json
+# The endpoing 'update' let to insert new data related to a current lead in Salesforce.
 /update:
   post:
     description: Try to update the information which has been recorded as a lead in Salesforce

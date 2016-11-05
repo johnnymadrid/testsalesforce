@@ -1,0 +1,21 @@
+<select id="lea5" name="lea5" tabindex="6">
+<option value="">--None--</option>
+<option value="Web">Web</option>
+<option value="Phone Inquiry">Phone Inquiry</option>
+<option value="Partner Referral">Partner Referral</option>
+<option value="Purchased List">Purchased List</option>
+<option value="Other">Other</option>
+</select>
+
+
+<select id="lea13" name="lea13" tabindex="14">
+<option value="Open - Not Contacted">Open - Not Contacted</option>
+<option value="Working - Contacted">Working - Contacted</option>
+<option value="Closed - Converted">Closed - Converted</option>
+<option value="Closed - Not Converted">Closed - Not Converted</option>
+</select>
+
+
+
+,
+      "pattern": "/^[-a-z0-9~!$%^&*_=+}{\'?]+(\.[-a-z0-9~!$%^&*_=+}{\'?]+)*@([a-z0-9_][-a-z0-9_]*(\.[-a-z0-9_]+)*\.(aero|arpa|biz|com|coop|edu|gov|info|int|mil|museum|name|net|org|pro|travel|mobi|[a-z][a-z])|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(:[0-9]{1,5})?$/i"
