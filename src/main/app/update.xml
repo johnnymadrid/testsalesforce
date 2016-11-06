@@ -10,16 +10,11 @@ http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/cor
 %output application/java
 ---
 [{
-	LastName: payload.lastName,
-	Company: payload.company,
-	Rating: payload.rating
 }]]]></dw:set-payload>
         </dw:transform-message>
-        <sfdc:update config-ref="Salesforce_Basic_Connection" type="Lead" doc:name="Update Lead">
+        <sfdc:update config-ref="Salesforce_Basic_Connection" type="Account" doc:name="Update Lead">
             <sfdc:objects ref="#[payload]"/>
         </sfdc:update>
-        <set-payload value="{
-  &quot;message&quot;: &quot;Lead updated!&quot;
-}" doc:name="Set Payload" mimeType="application/json"/>
+        <set-payload value="{   &quot;message&quot;: &quot;Account updated!&quot; }" doc:name="Set Payload" mimeType="application/json"/>
     </sub-flow>
 </mule>

@@ -25,30 +25,19 @@ baseUri: https://mocksvc.mulesoft.com/mocks/4f16b454-fe24-490b-a441-ba52829e794a
         body:
           application/json:
             example: !include ./responses/400.json
-# The endpoing 'update' let to insert new data related to a current lead in Salesforce.
+# The endpoing 'update' let to insert new data related to a current account in Salesforce.
 /update:
   post:
-    description: Try to update the information which has been recorded as a lead in Salesforce
+    description: The update endpoint try to update the information in a current account.
     body:
       application/json:
-        example: | 
-          {
-            "lastName": "Newie",
-            "company": "Popular Bank",
-            "rating": "Hot"
-          }
+        example: !include ./examples/update.json
     responses:
       200:
         body:
           application/json:
-            example: |
-              {
-                "message": "Lead updated!"
-              }
+            example: !include ./responses/200.json
       400:
         body:
           application/json:
-            example: |
-              {
-                "message": "we will try to figure out what has been done."
-              }
+            example: !include ./responses/400.json

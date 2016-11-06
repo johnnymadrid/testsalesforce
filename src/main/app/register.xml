@@ -23,7 +23,7 @@ http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/cor
 	LeadSource: payload.leadSource,
 	Status: payload.leadStatus,
 	Industry: payload.industry,
-	NumberOfEmployees: 0 when payload.noOfEmployees as :string as :number <= 0 otherwise truncate(payload.noOfEmployees)
+	NumberOfEmployees: 0 when payload.noOfEmployees as :number <= 0 otherwise truncate(payload.noOfEmployees)
 }]]]></dw:set-payload>
         </dw:transform-message>
         <sfdc:create config-ref="Salesforce_Basic_Connection" type="Lead" doc:name="Create Lead">
