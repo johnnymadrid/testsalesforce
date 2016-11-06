@@ -6,8 +6,11 @@ http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee
 http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
     <sub-flow name="register-flow">
         <dw:transform-message doc:name="Register Lead">
+            <dw:input-payload doc:sample="sample_data/json.json"/>
             <dw:set-payload><![CDATA[%dw 1.0
+%input payload application/json
 %output application/java
+%function truncate(n) ((n as :string) splitBy '.')[0] as :number when n!=null otherwise n
 ---
 [{
 	LastName: payload.lastName,
@@ -18,7 +21,9 @@ http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/cor
 	MobilePhone: payload.mobile,
 	Email: payload.email,
 	LeadSource: payload.leadSource,
-	Status: payload.leadStatus
+	Status: payload.leadStatus,
+	Industry: payload.industry,
+	NumberOfEmployees: 0 when payload.noOfEmployees as :string as :number <= 0 otherwise truncate(payload.noOfEmployees)
 }]]]></dw:set-payload>
         </dw:transform-message>
         <sfdc:create config-ref="Salesforce_Basic_Connection" type="Lead" doc:name="Create Lead">
@@ -26,6 +31,6 @@ http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/cor
         </sfdc:create>
         <set-payload value="{
   &quot;message&quot;: &quot;Registration successful&quot;
-}" doc:name="Set Payload"/>
+}" doc:name="Set Payload" mimeType="application/json"/>
     </sub-flow>
 </mule>

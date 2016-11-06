@@ -5,6 +5,8 @@
   "phone": "(408)326-9000",
    "mobile": "(0) 712 345 6789",
   "company": "BigCompany",
+  "industry": "Medicine",
+  "noOfEmployees": "-1",
   "email": "firstname.lastname@bigcompany.com",
   "leadStatus": "Open - Not Contacted",
   "leadSource": "Phone Inquiry"

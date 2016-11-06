@@ -20,6 +20,6 @@ http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/cor
         </sfdc:update>
         <set-payload value="{
   &quot;message&quot;: &quot;Lead updated!&quot;
-}" doc:name="Set Payload"/>
+}" doc:name="Set Payload" mimeType="application/json"/>
     </sub-flow>
 </mule>

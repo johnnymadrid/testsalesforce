@@ -51,6 +51,15 @@
       "type": "string",
       "description": "The source of lead which is used to relate with the user.",
       "enum": ["", "Web", "Phone Inquiry", "Partner Referral", "Purchased List", "Other"]
+    },
+    "industry": {
+      "type": "string",
+      "description": "Type of industry which the company is driven.",
+      "enum": ["","Agriculture","Apparel","Banking","Biotechnology","Chemicals","Communications","Construction","Consulting","Education","Electronics","Energy","Engineering","Entertainment","Environmental","Finance","Food Beverage","Government","Healthcare","Hospitality","Insurance","Machinery","Manufacturing","Media","Not For Profit","Recreation","Retail","Shipping","Technology","Telecommunications","Transportation","Utilities","Other"]
+    },
+    "noOfEmployees" : {
+      "type": "integer",
+      "description": "Number of Employees that company registered."
     }
   },
   "required": [
