@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:spring="http://www.springframework.org/schema/beans" xmlns:sfdc="http://www.mulesoft.org/schema/mule/sfdc" xmlns:dw="http://www.mulesoft.org/schema/mule/ee/dw" xmlns:core="http://www.mulesoft.org/schema/mule/core" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+<mule xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:spring="http://www.springframework.org/schema/beans" xmlns:sfdc="http://www.mulesoft.org/schema/mule/sfdc" xmlns:dw="http://www.mulesoft.org/schema/mule/ee/dw" xmlns:core="http://www.mulesoft.org/schema/mule/core" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
 http://www.mulesoft.org/schema/mule/sfdc http://www.mulesoft.org/schema/mule/sfdc/current/mule-sfdc.xsd
 http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee/dw/current/dw.xsd
-http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
-    <sub-flow name="update-flow">
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd">
+    <sub-flow name="extra-update-flow">
         <dw:transform-message doc:name="Update Lead">
             <dw:set-payload><![CDATA[%dw 1.0
 %output application/java
@@ -12,11 +13,59 @@ http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/cor
 [{
 }]]]></dw:set-payload>
         </dw:transform-message>
-        <sfdc:query-single config-ref="SalesforceConnector" query="dsql:SELECT FirstName,LastName,Phone,Title FROM Contact ORDER BY FirstName ASC" doc:name="Search Contact"/>
-        <logger message="#[payload]" level="INFO" doc:name="Logger"/>
         <sfdc:update config-ref="SalesforceConnector" type="Account" doc:name="Update Account">
             <sfdc:objects ref="#[payload]"/>
         </sfdc:update>
-        <set-payload value="{   &quot;message&quot;: &quot;Account updated!&quot; }" doc:name="Set Payload" mimeType="application/json"/>
+    </sub-flow>
+    <sub-flow name="update-flow">
+        <set-variable variableName="originalPayload" value="#[payload]" mimeType="application/json" doc:name="Original Payload"/>
+        <sfdc:query config-ref="SalesforceConnector" query="dsql:SELECT DISTINCT A.Id 
+FROM Account as A
+LEFT JOIN Contact as C 
+ON A.Id = C.Id
+AND C.LastName='#[flowVars.originalPayload.contactLastName]'
+" doc:name="Query Distinct Account"/>
+        <choice doc:name="exist Account?">
+            <when expression="#[payload != empty]">
+                <dw:transform-message doc:name="Account to Salesforce">
+                    <dw:set-payload><![CDATA[%dw 1.0
+%output application/java
+---
+{
+	Id                : payload.Id,
+	Name              : flowVars.originalPayload.contactName,
+	BillingStreet     : flowVars.originalPayload.accountBillingStreet,
+	BillingCity       : flowVars.originalPayload.accountBillingCity,
+	BillingState      : flowVars.originalPayload.accountBillingState,
+	BillingPostalCode : flowVars.originalPayload.accountBillingPostCode,
+	BillingCountry    : flowVars.originalPayload.accountBillingCountry,
+	ShippingStreet    : flowVars.originalPayload.accountShippingStreet,
+	ShippingCity      : flowVars.originalPayload.accountShippingCity,
+	ShippingState     : flowVars.originalPayload.accountShippingState,
+	ShippingPostalCode: flowVars.originalPayload.accountShippingPostCode,
+	ShippingCountry   : flowVars.originalPayload.accountShippingCountry,
+	Phone             : flowVars.originalPayload.contactPhone
+
+}]]></dw:set-payload>
+                </dw:transform-message>
+                <sfdc:update config-ref="SalesforceConnector" type="Account" doc:name="Salesforce">
+                    <sfdc:objects ref="#[payload]"/>
+                </sfdc:update>
+                <choice doc:name="Choice">
+                    <when expression="#[payload.success == true]">
+                        <logger message="Update successful" level="INFO" doc:name="Update INFO"/>
+                    </when>
+                    <otherwise>
+                        <logger message="No possible update..." level="ERROR" doc:name="No possible update"/>
+                        <set-property propertyName="http.status" value="#[500]" doc:name="Property"/>
+                    </otherwise>
+                </choice>
+            </when>
+            <otherwise>
+                <logger message="Account couldn't retrieve..." level="INFO" doc:name="No Account Retrieval"/>
+                <set-property propertyName="http.status" value="#[404]" doc:name="Property"/>
+            </otherwise>
+        </choice>
+        <set-payload value="{   &quot;message&quot;: #[message.payload] }" doc:name="Set Payload" mimeType="application/json"/>
     </sub-flow>
 </mule>

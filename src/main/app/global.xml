@@ -10,5 +10,4 @@ http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/cor
     <http:listener-config name="SalesforceHTTPListener" host="${host}" port="${port}" doc:name="HTTP Listener Configuration"/>
     <apikit:config name="api-config" raml="api.raml" consoleEnabled="false" doc:name="Router"/>
     <sfdc:config name="SalesforceConnector" username="${sfdc.username}" password="${sfdc.password}" securityToken="${sfdc.token}" url="${sfdc.url}" doc:name="Salesforce: Basic Authentication"/>
-    
 </mule>
