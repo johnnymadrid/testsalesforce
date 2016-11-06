@@ -1,0 +1,156 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "contactName": {
+      "type": "string"
+    },
+    "contactTitle": {
+      "type": "string"
+    },
+    "contactEmail": {
+      "type": "string"
+    },
+    "contactPhone": {
+      "type": "string"
+    },
+    "accountName": {
+      "type": "string"
+    },
+    "accountPhone": {
+      "type": "string"
+    },
+    "contactMobile": {
+      "type": "string"
+    },
+    "accountParent": {
+      "type": "string"
+    },
+    "rating": {
+      "type": "string"
+    },
+    "accountNumber": {
+      "type": "string"
+    },
+    "website": {
+      "type": "string"
+    },
+    "accountSite": {
+      "type": "string"
+    },
+    "tickerSymbol": {
+      "type": "string"
+    },
+    "accountType": {
+      "type": "string"
+    },
+    "accountOwnership": {
+      "type": "string"
+    },
+    "industry": {
+      "type": "string"
+    },
+    "noOfEmployees": {
+      "type": "string"
+    },
+    "annualRevenue": {
+      "type": "string"
+    },
+    "currencyRevenue": {
+      "type": "string"
+    },
+    "sicCode": {
+      "type": "string"
+    },
+    "accountBillingNumberStreet": {
+      "type": "string"
+    },
+    "accountBillingStreet": {
+      "type": "string"
+    },
+    "accountBillingCity": {
+      "type": "string"
+    },
+    "accountBillingCountry": {
+      "type": "string"
+    },
+    "accountBillingPostCode": {
+      "type": "string"
+    },
+    "accountShippingNumberStreet": {
+      "type": "string"
+    },
+    "accountShippingStreet": {
+      "type": "string"
+    },
+    "accountShippingCity": {
+      "type": "string"
+    },
+    "accountShippingCountry": {
+      "type": "string"
+    },
+    "accountShippingPostCode": {
+      "type": "string"
+    },
+    "accountCustomerPriority": {
+      "type": "string"
+    },
+    "accountSLA": {
+      "type": "string"
+    },
+    "accountSLAExpirationDate": {
+      "type": "string"
+    },
+    "accountSLASerialNumber": {
+      "type": "string"
+    },
+    "accountNumberOfLocations": {
+      "type": "string"
+    },
+    "accountUpsellOpportunity": {
+      "type": "string"
+    },
+    "accountActive": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "contactName",
+    "contactTitle",
+    "contactEmail",
+    "contactPhone",
+    "accountName",
+    "accountPhone",
+    "contactMobile",
+    "accountParent",
+    "rating",
+    "accountNumber",
+    "website",
+    "accountSite",
+    "tickerSymbol",
+    "accountType",
+    "accountOwnership",
+    "industry",
+    "noOfEmployees",
+    "annualRevenue",
+    "currencyRevenue",
+    "sicCode",
+    "accountBillingNumberStreet",
+    "accountBillingStreet",
+    "accountBillingCity",
+    "accountBillingCountry",
+    "accountBillingPostCode",
+    "accountShippingNumberStreet",
+    "accountShippingStreet",
+    "accountShippingCity",
+    "accountShippingCountry",
+    "accountShippingPostCode",
+    "accountCustomerPriority",
+    "accountSLA",
+    "accountSLAExpirationDate",
+    "accountSLASerialNumber",
+    "accountNumberOfLocations",
+    "accountUpsellOpportunity",
+    "accountActive"
+  ]
+}

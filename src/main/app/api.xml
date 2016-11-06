@@ -6,12 +6,12 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
 http://www.mulesoft.org/schema/mule/sfdc http://www.mulesoft.org/schema/mule/sfdc/current/mule-sfdc.xsd
 http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee/dw/current/dw.xsd">
     <flow name="api-main">
-        <http:listener config-ref="HTTPSalesforceListener" path="/api/*" allowedMethods="POST" doc:name="HTTP"/>
+        <http:listener config-ref="SalesforceHTTPListener" path="/api/*" allowedMethods="POST" doc:name="HTTP"/>
         <apikit:router config-ref="api-config" doc:name="APIkit Router"/>
         <exception-strategy ref="Global_Exception_Mapping" doc:name="Reference Exception Strategy"/>
     </flow>
     <flow name="api-console">
-        <http:listener config-ref="HTTPSalesforceListener" path="/console/*" doc:name="HTTP"/>
+        <http:listener config-ref="SalesforceHTTPListener" path="/console/*" doc:name="HTTP"/>
         <apikit:console config-ref="api-config" doc:name="APIkit Console"/>
     </flow>
     <flow name="post:/update:api-config">

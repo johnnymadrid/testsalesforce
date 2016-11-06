@@ -12,7 +12,9 @@ http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/cor
 [{
 }]]]></dw:set-payload>
         </dw:transform-message>
-        <sfdc:update config-ref="Salesforce_Basic_Connection" type="Account" doc:name="Update Lead">
+        <sfdc:query-single config-ref="SalesforceConnector" query="dsql:SELECT FirstName,LastName,Phone,Title FROM Contact ORDER BY FirstName ASC" doc:name="Search Contact"/>
+        <logger message="#[payload]" level="INFO" doc:name="Logger"/>
+        <sfdc:update config-ref="SalesforceConnector" type="Account" doc:name="Update Account">
             <sfdc:objects ref="#[payload]"/>
         </sfdc:update>
         <set-payload value="{   &quot;message&quot;: &quot;Account updated!&quot; }" doc:name="Set Payload" mimeType="application/json"/>
