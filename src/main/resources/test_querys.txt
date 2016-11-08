@@ -1,0 +1,4 @@
+SELECT Id, AccountNumber,Active__c,CleanStatus,CreatedById,CreatedDate,CustomerPriority__c,Industry,Name,OwnerId,ParentId,Type FROM Account
+
+
+#[flowVars.originalPayload.contactEmail]

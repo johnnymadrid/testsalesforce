@@ -1,68 +1,80 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:spring="http://www.springframework.org/schema/beans" xmlns:sfdc="http://www.mulesoft.org/schema/mule/sfdc" xmlns:dw="http://www.mulesoft.org/schema/mule/ee/dw" xmlns:core="http://www.mulesoft.org/schema/mule/core" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+<mule xmlns:metadata="http://www.mulesoft.org/schema/mule/metadata" xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:spring="http://www.springframework.org/schema/beans" xmlns:sfdc="http://www.mulesoft.org/schema/mule/sfdc" xmlns:dw="http://www.mulesoft.org/schema/mule/ee/dw" xmlns:core="http://www.mulesoft.org/schema/mule/core" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
 http://www.mulesoft.org/schema/mule/sfdc http://www.mulesoft.org/schema/mule/sfdc/current/mule-sfdc.xsd
 http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee/dw/current/dw.xsd
 http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd">
-    <sub-flow name="extra-update-flow">
-        <dw:transform-message doc:name="Update Lead">
+    <sub-flow name="update-flow">
+        <set-payload value="#[payload]" doc:name="Set Payload" mimeType="application/json"/>
+        <set-variable variableName="input" value="#[payload]" encoding="UTF-8" mimeType="application/json" doc:name="input"/>
+        <dw:transform-message metadata:id="13b568f3-263d-4e44-8253-9f748c64f18c" doc:name="Input Parameter">
+            <dw:input-payload doc:sample="sample_data/json_1.json"/>
             <dw:set-payload><![CDATA[%dw 1.0
 %output application/java
 ---
-[{
-}]]]></dw:set-payload>
+{
+	Email: payload.contactEmail
+}]]></dw:set-payload>
         </dw:transform-message>
-        <sfdc:update config-ref="SalesforceConnector" type="Account" doc:name="Update Account">
-            <sfdc:objects ref="#[payload]"/>
-        </sfdc:update>
-    </sub-flow>
-    <sub-flow name="update-flow">
-        <set-variable variableName="originalPayload" value="#[payload]" mimeType="application/json" doc:name="Original Payload"/>
-        <sfdc:query config-ref="SalesforceConnector" query="dsql:SELECT DISTINCT A.Id 
-FROM Account as A
-LEFT JOIN Contact as C 
-ON A.Id = C.Id
-AND C.LastName='#[flowVars.originalPayload.contactLastName]'
-" doc:name="Query Distinct Account"/>
-        <choice doc:name="exist Account?">
-            <when expression="#[payload != empty]">
-                <dw:transform-message doc:name="Account to Salesforce">
+        <sfdc:query-single config-ref="SalesforceConnector" query="dsql:SELECT AccountId FROM Contact WHERE Email = '#[payload.Email]'" doc:name="Query Contact Email"/>
+        <choice doc:name="Getting correspond Contact">
+            <when expression="#[payload != null &amp;&amp; payload.AccountId != null &amp;&amp; payload.AccountId != empty]">
+                <dw:transform-message doc:name="AccountId">
+                    <dw:input-payload/>
                     <dw:set-payload><![CDATA[%dw 1.0
 %output application/java
 ---
 {
-	Id                : payload.Id,
-	Name              : flowVars.originalPayload.contactName,
-	BillingStreet     : flowVars.originalPayload.accountBillingStreet,
-	BillingCity       : flowVars.originalPayload.accountBillingCity,
-	BillingState      : flowVars.originalPayload.accountBillingState,
-	BillingPostalCode : flowVars.originalPayload.accountBillingPostCode,
-	BillingCountry    : flowVars.originalPayload.accountBillingCountry,
-	ShippingStreet    : flowVars.originalPayload.accountShippingStreet,
-	ShippingCity      : flowVars.originalPayload.accountShippingCity,
-	ShippingState     : flowVars.originalPayload.accountShippingState,
-	ShippingPostalCode: flowVars.originalPayload.accountShippingPostCode,
-	ShippingCountry   : flowVars.originalPayload.accountShippingCountry,
-	Phone             : flowVars.originalPayload.contactPhone
-
+	Id: payload.AccountId
 }]]></dw:set-payload>
                 </dw:transform-message>
-                <sfdc:update config-ref="SalesforceConnector" type="Account" doc:name="Salesforce">
-                    <sfdc:objects ref="#[payload]"/>
-                </sfdc:update>
-                <choice doc:name="Choice">
-                    <when expression="#[payload.success == true]">
-                        <logger message="Update successful" level="INFO" doc:name="Update INFO"/>
+                <sfdc:query config-ref="SalesforceConnector" query="dsql:SELECT Id,  AccountNumber,BillingCity,BillingCountry,BillingPostalCode,BillingState,BillingStreet,Name,Phone,ShippingCity,ShippingCountry,ShippingPostalCode,ShippingState,ShippingStreet,Type FROM Account WHERE Id = '#[message.payload.AccountId]'" doc:name="Query Account - Id"/>
+                <choice doc:name="exist Account?">
+                    <when expression="#[payload != null]">
+                        <dw:transform-message doc:name="Account to Salesforce">
+                            <dw:input-payload doc:sample="sample_data/list_Account.dwl"/>
+                            <dw:set-payload><![CDATA[%dw 1.0
+%output application/java
+---
+payload map ((payload01 , indexOfPayload01) -> {
+	Id: payload01.Id,
+	Name: payload01.Name,
+	Type: payload01.Type,
+	BillingStreet: payload01.BillingStreet,
+	BillingCity: payload01.BillingCity,
+	BillingState: payload01.BillingState,
+	BillingPostalCode: payload01.BillingPostalCode,
+	BillingCountry: payload01.BillingCountry,
+	ShippingStreet: payload01.ShippingStreet,
+	ShippingCity: payload01.ShippingCity,
+	ShippingState: payload01.ShippingState,
+	ShippingPostalCode: payload01.ShippingPostalCode,
+	ShippingCountry: payload01.ShippingCountry,
+	Phone: payload01.Phone
+})]]></dw:set-payload>
+                        </dw:transform-message>
+                        <sfdc:update config-ref="SalesforceConnector" type="Account" doc:name="Update Account">
+                            <sfdc:objects ref="#[payload]"/>
+                        </sfdc:update>
+                        <choice doc:name="Failure?">
+                            <when expression="#[payload.success == true]">
+                                <logger message="Update successful." level="INFO" doc:name="Update INFO"/>
+                            </when>
+                            <otherwise>
+                                <logger message="No possible update..." level="ERROR" doc:name="No possible update"/>
+                                <set-property propertyName="http.status" value="#[500]" mimeType="application/json" doc:name="Property"/>
+                            </otherwise>
+                        </choice>
                     </when>
                     <otherwise>
-                        <logger message="No possible update..." level="ERROR" doc:name="No possible update"/>
-                        <set-property propertyName="http.status" value="#[500]" doc:name="Property"/>
+                        <logger message="Account couldn't retrieve..." level="INFO" doc:name="No Account Retrieval"/>
+                        <set-property propertyName="http.status" value="#[404]" mimeType="application/json" doc:name="Property"/>
                     </otherwise>
                 </choice>
             </when>
             <otherwise>
-                <logger message="Account couldn't retrieve..." level="INFO" doc:name="No Account Retrieval"/>
+                <logger message="Account couldn't retrieve..." level="ERROR" doc:name="No Contact Retrieval"/>
                 <set-property propertyName="http.status" value="#[404]" doc:name="Property"/>
             </otherwise>
         </choice>
